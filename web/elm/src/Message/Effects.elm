@@ -16,6 +16,7 @@ import Browser.Navigation as Navigation
 import Concourse
 import Concourse.BuildStatus exposing (BuildStatus)
 import Concourse.Pagination exposing (Page)
+import Json.Decode
 import Json.Encode
 import Maybe exposing (Maybe)
 import Message.Callback exposing (Callback(..), TooltipPolicy(..))
@@ -199,7 +200,7 @@ runEffect effect key csrfToken =
                 |> Task.attempt JobFetched
 
         FetchJobs id ->
-            Network.Job.fetchJobsRaw id
+            Api.get (Endpoints.Jobs id) Json.Decode.value
                 |> Task.attempt JobsFetched
 
         FetchJobBuilds id page ->
