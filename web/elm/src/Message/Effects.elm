@@ -199,7 +199,7 @@ runEffect effect key csrfToken =
                 |> Task.attempt JobsFetched
 
         FetchJobBuilds id page ->
-            Api.paginatedGet (Endpoints.JobBuilds id page) Concourse.decodeBuild
+            Api.paginatedGet (Endpoints.JobBuilds id) page Concourse.decodeBuild
                 |> Task.attempt JobBuildsFetched
 
         FetchResource id ->
@@ -211,7 +211,8 @@ runEffect effect key csrfToken =
                 |> Task.attempt Checked
 
         FetchVersionedResources id paging ->
-            Api.paginatedGet (Endpoints.ResourceVersions id paging)
+            Api.paginatedGet (Endpoints.ResourceVersions id)
+                paging
                 Concourse.decodeVersionedResource
                 |> Task.map (\b -> ( paging, b ))
                 |> Task.attempt VersionedResourcesFetched
@@ -362,6 +363,7 @@ runEffect effect key csrfToken =
                 { endpoint = Endpoints.Logout
                 , method = Api.Get
                 , expect = Api.ignoreResponse
+                , query = []
                 , body = Http.emptyBody
                 , headers = []
                 }
@@ -390,7 +392,7 @@ runEffect effect key csrfToken =
                 |> Task.attempt BuildJobDetailsFetched
 
         FetchBuildHistory job page ->
-            Api.paginatedGet (Endpoints.JobBuilds job page) Concourse.decodeBuild
+            Api.paginatedGet (Endpoints.JobBuilds job) page Concourse.decodeBuild
                 |> Task.attempt BuildHistoryFetched
 
         FetchBuildPrep delay buildId ->
